@@ -1,0 +1,20 @@
+---
+
+- name: create user ansible
+  user:
+    name: ansible
+    groups: wheel
+
+- name: add ssh key for sudoer
+  authorized_key:
+    user: ansible
+    state: present
+    key: "{{ lookup('file', '/Users/jlipinski/.ssh/ansible.pub') }}"
+
+- name: add sudoers file
+  copy:
+    src: ansible_sudoer
+    dest: /etc/sudoers.d/ansible
+    owner: root
+    group: root
+    mode: 0440

@@ -1,0 +1,5 @@
+- name: update dnf cache (Fedora)
+  dnf:
+    name: '*'
+    update_cache: true
+    state: latest

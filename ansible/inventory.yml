@@ -1,0 +1,7 @@
+---
+all:
+  hosts:
+  children:
+    docker:
+      hosts:
+        192.168.64.11
