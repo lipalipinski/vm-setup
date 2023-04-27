@@ -1,6 +1,6 @@
 ---
 
-- name: update cache
+- name: update packages
   hosts: all
   become: true
   roles: 
@@ -11,8 +11,9 @@
   become: true
   tasks:
     
-    - package:
+    - apt:
         name:
           - git
           - vim
-        state: present
+          - tree
+        state: latest

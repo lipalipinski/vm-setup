@@ -4,4 +4,8 @@ Vagrant.configure("2") do |config|
 
   config.vm.hostname = "ubuntu-1"
   config.vm.network "private_network", ip: "192.168.56.3"
+
+  config.vm.provision "tools", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/tools.yml"
+  end
 end
