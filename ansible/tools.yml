@@ -16,4 +16,5 @@
           - git
           - vim
           - tree
+          - htop
         state: latest
