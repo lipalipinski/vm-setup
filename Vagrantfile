@@ -3,7 +3,6 @@ Vagrant.configure("2") do |config|
   config.vm.box = "hashicorp/bionic64"
 
   config.vm.provider "virtualbox" do |v|
-    v.name = "nexus-vm"
     v.cpus = 2
     v.memory = 2048
   end
@@ -12,19 +11,28 @@ Vagrant.configure("2") do |config|
     ansible.playbook = "ansible/tools.yml"
   end
 
-  config.vm.define "ubuntu-vm1" do |ubuntu-vm1|
-    docker.vm.hostname = "docker-vm"
-    docker.vm.network "private_network", ip: "192.168.56.3"
+  config.vm.define "vm1" do |vm1|
+    vm1.vm.hostname = "vm1"
+    vm1.vm.network "private_network", ip: "192.168.56.3"
+    vm1.vm.provider "virtualbox" do |v|
+      v.name = "vm1"
+    end
   end
 
-  config.vm.define "ubuntu-vm2" do |ubuntu-vm2|
-    jenkins.vm.hostname = "jenkins-vm"
-    jenkins.vm.network "private_network", ip: "192.168.56.4"
+  config.vm.define "vm2" do |vm2|
+    vm2.vm.hostname = "vm2"
+    vm2.vm.network "private_network", ip: "192.168.56.4"
+    vm2.vm.provider "virtualbox" do |v|
+      v.name = "vm2"
+    end
   end
 
-  config.vm.define "ubuntu-vm3" do |ubuntu-vm3|
-    nexus.vm.hostname = "nexus-vm"
-    nexus.vm.network "private_network", ip: "192.168.56.5"
+  config.vm.define "vm3" do |vm3|
+    vm3.vm.hostname = "vm3"
+    vm3.vm.network "private_network", ip: "192.168.56.5"
+    vm3.vm.provider "virtualbox" do |v|
+      v.name = "vm3"
+    end
   end
   
 end
