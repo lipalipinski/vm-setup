@@ -1,7 +1,0 @@
----
-
-- name: set sudoer
-  hosts: all
-  become: true
-  roles:
-    - sudoer
