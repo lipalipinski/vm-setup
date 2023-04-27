@@ -9,6 +9,11 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "tools", type: "ansible" do |ansible|
     ansible.playbook = "ansible/tools.yml"
+    ansible.groups = {
+      "docker" => ["vm1"], 
+      "jenkins" => ["vm2"],
+      "nexus" => ["vm3"]
+    }
   end
 
   config.vm.define "vm1" do |vm1|
