@@ -1,0 +1,43 @@
+---
+
+- name: Download Jenkins LTS
+  get_url:
+    url: https://pkg.jenkins.io/redhat/jenkins.repo
+    dest: /etc/yum.repos.d/jenkins.repo
+
+- name: Import Jenkins key
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://pkg.jenkins.io/redhat/jenkins.io-2023.key
+
+- name: dnf update
+  dnf:
+    name: "*"
+    state: latest
+
+- name: install java 11
+  dnf:
+    name: java-11-openjdk-devel
+    state: present
+
+- name: install Jenkins
+  dnf:
+    name: jenkins
+    state: latest
+
+- name: check if initial passwd exists
+  stat:
+    path: /var/lib/jenkins/secrets/initialAdminPassword
+  register: p
+
+- name: read initial admin pass
+  shell: |
+    cat /var/lib/jenkins/secrets/initialAdminPassword
+  when: p.stat.exists
+  register: adm_passwd
+
+- name: print initial admin passwd
+  debug:
+    msg: "INITIAL JENKINS ADMIN PASSWD: {{ adm_passwd.stdout }}"
+  when: p.stat.exists
+  

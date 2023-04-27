@@ -1,0 +1,47 @@
+---
+
+- name: Add Nexus repo to apt
+  get_url:
+    url: https://repo.sonatype.com/repository/community-hosted/deb/sonatype-community.list
+    dest: /etc/apt/sources.list.d/
+
+- name: Import Nexus key
+  ansible.builtin.apt_key:
+    state: present
+    url: https://repo.sonatype.com/repository/community-hosted/pki/deb-gpg/DEB-GPG-KEY-Sonatype.asc
+
+- name: apt update and upgrade
+  apt:
+    update_cache: true
+    upgrade: full
+
+- name: Install JRE 8
+  apt:
+    name: openjdk-8-jdk
+    state: latest
+
+- name: install Nexus
+  apt:
+    name: nexus-repository-manager
+    state: latest
+
+- name: summary
+  debug:
+    msg: "Running Nexus on http://{{ ansible_hostname }}:8081"
+    
+- name: check if initial admin passwd exists
+  stat:
+    path: /opt/sonatype/sonatype-work/nexus3/admin.password
+  register: pn
+
+- name: read admin passwd
+  shell: |
+    cat /opt/sonatype/sonatype-work/nexus3/admin.password
+  when: pn.stat.exists
+  register: nexus_passwd
+
+- name: print nexus passwd
+  debug:
+    msg: "INITIAL NEXUS ADMIN PASSWD: {{ nexus_passwd.stdout }}"
+  when: pn.stat.exists
+

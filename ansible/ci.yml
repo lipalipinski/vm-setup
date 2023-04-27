@@ -1,0 +1,30 @@
+---
+- name: update cache
+  hosts: all
+  become: true
+  roles:
+    - update-cache
+
+- name: install jenkins
+  hosts: jenkins
+  become: true
+  roles:
+    - install-jenkins
+
+- name: install Nexus
+  hosts: nexus
+  become: true
+  roles:
+    - install-nexus
+
+- name: install Docker
+  hosts: docker
+  become: true
+  roles:
+    - install-docker
+
+- name: start jenkins
+  hosts: jenkins
+  become: true
+  roles:
+    - start-jenkins
