@@ -1,3 +1,10 @@
+- name: start timecyncd service
+  service:
+    name: systemd-timesyncd
+    enabled: true
+    state: started
+    
+
 - name: apt update and upgrade
   apt:
     update_cache: true
