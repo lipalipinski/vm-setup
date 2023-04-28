@@ -10,11 +10,23 @@ Vagrant.configure("2") do |config|
   N=3
   (1..N).each do |id|
     config.vm.define "vm#{id}" do |machine|
-      machine.vm.hostname = "vm#{id}"
-      machine.vm.network "private_network", ip: "192.168.56.#{2+id}"
-      machine.vm.provider "virtualbox" do |v|
-        v.name = "vm#{id}"
+
+      case id
+      when 1
+        sufix="docker"
+      when 2
+        sufix="jenkins"
+      when 3
+        sufix="nexus"
       end
+
+      machine.vm.hostname = "vm#{id}-#{sufix}"
+      machine.vm.provider "virtualbox" do |v|
+        v.name = "vm#{id}-#{sufix}"
+      end
+
+      machine.vm.network "private_network", ip: "192.168.56.#{2+id}"
+
       if id == 3
         machine.vm.provision "tools", type: "ansible" do |ansible|
           ansible.playbook = "ansible/tools.yml"
@@ -26,6 +38,8 @@ Vagrant.configure("2") do |config|
           }
          end
        end
+
     end
   end  
+
 end
