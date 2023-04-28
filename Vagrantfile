@@ -7,14 +7,6 @@ Vagrant.configure("2") do |config|
     v.memory = 2048
   end
 
-  config.vm.provision "tools", type: "ansible" do |ansible|
-    ansible.playbook = "ansible/tools.yml"
-    ansible.groups = {
-      "docker" => ["vm1"], 
-      "jenkins" => ["vm2"],
-      "nexus" => ["vm3"]
-    }
-  end
 
   config.vm.define "vm1" do |vm1|
     vm1.vm.hostname = "vm1-docker"
@@ -37,6 +29,15 @@ Vagrant.configure("2") do |config|
     vm3.vm.network "private_network", ip: "192.168.56.5"
     vm3.vm.provider "virtualbox" do |v|
       v.name = "vm3-nexus"
+    end
+    vm3.vm.provision "tools", type: "ansible" do |ansible|
+      ansible.playbook = "ansible/tools.yml"
+      ansible.limit = "all"
+      ansible.groups = {
+        "docker" => ["vm1"], 
+        "jenkins" => ["vm2"],
+        "nexus" => ["vm3"]
+      }
     end
   end
   
