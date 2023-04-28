@@ -22,7 +22,7 @@ Vagrant.configure("2") do |config|
       end
 
       # names
-      machine.vm.hostname = "vm#{id}-#{sufix}"
+      machine.vm.hostname = "vm#{id}#{sufix}"
       machine.vm.provider "virtualbox" do |v|
         v.name = "vm#{id}#{sufix}"
       end

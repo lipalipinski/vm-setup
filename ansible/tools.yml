@@ -20,3 +20,10 @@
           - tree
           - htop
         state: latest
+
+- name: install nexus
+  strategy: free
+  hosts: nexus
+  become: true
+  roles:
+    - install-nexus
