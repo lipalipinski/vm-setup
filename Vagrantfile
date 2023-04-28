@@ -11,22 +11,26 @@ Vagrant.configure("2") do |config|
   (1..N).each do |id|
     config.vm.define "vm#{id}" do |machine|
 
+      # vm-specyfic
       case id
       when 1
-        sufix="docker"
+        sufix="-docker"
       when 2
-        sufix="jenkins"
+        sufix="-jenkins"
       when 3
-        sufix="nexus"
+       sufix="-nexus"
       end
 
+      # names
       machine.vm.hostname = "vm#{id}-#{sufix}"
       machine.vm.provider "virtualbox" do |v|
-        v.name = "vm#{id}-#{sufix}"
+        v.name = "vm#{id}#{sufix}"
       end
 
+      # network
       machine.vm.network "private_network", ip: "192.168.56.#{2+id}"
 
+      # provision
       if id == 3
         machine.vm.provision "tools", type: "ansible" do |ansible|
           ansible.playbook = "ansible/tools.yml"
