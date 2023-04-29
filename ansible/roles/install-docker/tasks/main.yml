@@ -1,22 +1,38 @@
 ---
+- name: uninstall any old docker
+  apt:
+    name:
+      - remove
+      - docker 
+      - docker-engine 
+      - docker.io 
+      - containerd 
+      - runc
+    state: absent
 
-- name: install dnf-plugins-core
-  dnf:
-    name: dnf-plugins-core
-    state: installed
+- name: install gpg key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
 
-- name: install repo
-  shell: dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+- name: add docker repo
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    state: present
 
+- name: apt update
+  apt:
+    update-cache: true
+    
 - name: install docker
-  dnf:
+  apt:
     name:
       - docker-ce
       - docker-ce-cli
       - containerd.io
       - docker-buildx-plugin
       - docker-compose-plugin
-    state: installed
+    state: latest
 
 - name: start docker service
   service:
@@ -24,9 +40,9 @@
     state: started
     enabled: true
 
-- name: open ports
-  firewalld:
-    port: 4243/tcp
-    state: enabled
-    permanent: true
-    immediate: true
+#- name: open ports
+#  firewalld:
+#    port: 4243/tcp
+#    state: enabled
+#    permanent: true
+#    immediate: true

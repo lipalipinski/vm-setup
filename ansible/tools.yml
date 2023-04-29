@@ -15,10 +15,13 @@
     
     - apt:
         name:
+          - ca-certificates
+          - curl
           - git
-          - vim
-          - tree
+          - gnupg
           - htop
+          - tree
+          - vim
         state: latest
 
 - name: install nexus
@@ -27,3 +30,10 @@
   become: true
   roles:
     - install-nexus
+
+- name: install docker
+  strategy: free
+  hosts: docker
+  become: true
+  roles:
+    - install-docker
