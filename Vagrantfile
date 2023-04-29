@@ -1,5 +1,5 @@
 Vagrant.configure("2") do |config|
-
+  
   config.vm.box = "hashicorp/bionic64"
 
   config.vm.provider "virtualbox" do |v|
@@ -8,17 +8,17 @@ Vagrant.configure("2") do |config|
   end
 
   N=3
-  (1..N).each do |id|
+  (0..N-1).each do |id|
     config.vm.define "vm#{id}" do |machine|
 
       # vm-specyfic
       case id
-      when 1
+      when 0
         sufix="-docker"
-      when 2
+      when 1
         sufix="-jenkins"
-      when 3
-       sufix="-nexus"
+      when 2
+        sufix="-nexus"
       end
 
       # names
@@ -28,17 +28,17 @@ Vagrant.configure("2") do |config|
       end
 
       # network
-      machine.vm.network "private_network", ip: "192.168.56.#{2+id}"
+      machine.vm.network "private_network", ip: "192.168.56.#{3+id}"
 
       # provision
-      if id == 3
+      if id == N-1
         machine.vm.provision "tools", type: "ansible" do |ansible|
           ansible.playbook = "ansible/tools.yml"
           ansible.limit = "all"
           ansible.groups = {
-            "docker" => ["vm1"], 
-            "jenkins" => ["vm2"],
-            "nexus" => ["vm3"]
+            "docker" => ["vm0"], 
+            "jenkins" => ["vm1"],
+            "nexus" => ["vm2"]
           }
          end
        end
