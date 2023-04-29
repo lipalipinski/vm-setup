@@ -40,6 +40,12 @@
     state: started
     enabled: true
 
+- name: run docker without sudo
+  user:
+    name: vagrant
+    groups: docker
+    append: true
+
 #- name: open ports
 #  firewalld:
 #    port: 4243/tcp
