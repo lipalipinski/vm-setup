@@ -1,5 +1,4 @@
 Vagrant.configure("2") do |config|
-  
   config.vm.box = "hashicorp/bionic64"
 
   config.vm.provider "virtualbox" do |v|
@@ -15,10 +14,13 @@ Vagrant.configure("2") do |config|
       case id
       when 0
         sufix="-docker"
+        machine.vm.network "forwarded_port", guest: 8080, host: 8090
       when 1
         sufix="-jenkins"
+        machine.vm.network "forwarded_port", guest: 8080, host: 8091
       when 2
         sufix="-nexus"
+        machine.vm.network "forwarded_port", guest: 8081, host: 8092
       end
 
       # names
