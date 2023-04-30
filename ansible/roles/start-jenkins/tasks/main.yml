@@ -10,12 +10,12 @@
     state: started
     enabled: true
 
-- name: enable firewall
-  firewalld:
-    port: 8080/tcp
-    state: enabled
-    permanent: true
-    immediate: true
+#- name: enable firewall
+#  firewalld:
+#    port: 8080/tcp
+#    state: enabled
+#    permanent: true
+#    immediate: true
 
 - name: summary
   debug:

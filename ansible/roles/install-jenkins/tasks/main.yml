@@ -1,27 +1,25 @@
 ---
-
-- name: Download Jenkins LTS
-  get_url:
-    url: https://pkg.jenkins.io/redhat/jenkins.repo
-    dest: /etc/yum.repos.d/jenkins.repo
-
-- name: Import Jenkins key
-  ansible.builtin.rpm_key:
+- name: Install Jenkins key
+  apt_key:
+    url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
     state: present
-    key: https://pkg.jenkins.io/redhat/jenkins.io-2023.key
 
-- name: dnf update
-  dnf:
-    name: "*"
-    state: latest
+- name: Add Jenkins repo
+  apt_repository:
+    repo: "deb https://pkg.jenkins.io/debian-stable binary/"
+    state: present
+
+- name: apt update
+  apt:
+    update-cache: true
 
 - name: install java 11
-  dnf:
-    name: java-11-openjdk-devel
-    state: present
+  apt:
+    name: openjdk-11-jdk
+    state: latest
 
 - name: install Jenkins
-  dnf:
+  apt:
     name: jenkins
     state: latest
 

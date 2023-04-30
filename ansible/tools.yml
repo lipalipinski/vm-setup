@@ -37,3 +37,11 @@
   become: true
   roles:
     - install-docker
+
+- name: instal jenkins
+  strategy: free
+  hosts: jenkins
+  become: true
+  roles:
+    - install-jenkins
+    - start-jenkins
