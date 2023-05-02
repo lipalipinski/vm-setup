@@ -16,7 +16,3 @@
 #    state: enabled
 #    permanent: true
 #    immediate: true
-
-- name: summary
-  debug:
-    msg: "Running Jenkins on http://{{ ansible_hostname }}:8080"

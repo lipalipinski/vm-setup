@@ -23,6 +23,11 @@
 - name: apt update
   apt:
     update-cache: true
+
+- name: install jdk11
+  apt:
+    name: openjdk-11-jdk
+    state: latest
     
 - name: install docker
   apt:
