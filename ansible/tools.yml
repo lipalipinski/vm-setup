@@ -45,3 +45,9 @@
   roles:
     - install-jenkins
     - start-jenkins
+
+- name: nexus ssl cert
+  hosts: nexus
+  become: true
+  roles:
+    - nexus-ssl
