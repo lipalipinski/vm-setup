@@ -9,3 +9,12 @@
     chdir: /opt/sonatype/nexus3/etc/ssl
     cmd: 'keytool -genkeypair -keystore keystore.jks -storepass password -keypass password -alias jetty -keyalg RSA -keysize 2048 -validity 5000 -dname "CN=*.192.168.56.5, OU=Example, O=Sonatype, L=Unspecified, ST=Unspecified, C=US" -ext "SAN=DNS:192.168.56.5,IP:192.168.56.5" -ext "BC=ca:true"'
   when: not keystore.stat.exists
+
+- name: ensure nexus.properties ssl port
+  lineinfile:
+    dest: /opt/sonatype/sonatype-work/nexus3/etc/nexus.properties
+    line: "application-port-ssl=8443"
+    insertafter: "application-port="
+    firstmatch: true
+    backup: true
+
