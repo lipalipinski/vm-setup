@@ -12,9 +12,29 @@
 
 - name: ensure nexus.properties ssl port
   lineinfile:
-    dest: /opt/sonatype/sonatype-work/nexus3/etc/nexus.properties
+    dest: "{{ nexus_prop_path }}"
     line: "application-port-ssl=8443"
     insertafter: "application-port="
     firstmatch: true
     backup: true
 
+- name: ensure nexus args (nexus.properties)
+  replace:
+    path: "{{ nexus_prop_path }}"
+    regexp: '(nexus-args=.*jetty-http.xml,)(\${jetty.etc}/jetty-requestlog.xml.*)?$'
+    replace: '\1${jetty.etc}/jetty-https.xml,\2'
+    backup: true
+
+- name: uncomment nexus args
+  lineinfile:
+    path: "{{ nexus_prop_path }}"
+    regexp: (?i)^\s*#\s*(nexus-args=.*)
+    line: \1
+    backrefs: yes
+    backup: true
+
+- name: ssl.etc in nexus.prop
+  lineinfile:
+    path: "{{ nexus_prop_path }}"
+    line: "ssl.etc=${karaf.data}/etc/ssl"
+    backup: true
