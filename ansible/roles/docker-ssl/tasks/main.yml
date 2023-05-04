@@ -25,3 +25,12 @@
     cmd: "keytool -rfc -printcert -sslserver 192.168.56.5:8443 | sudo tee ca.crt > /dev/null"
   when: not cert.stat.exists
 
+- name: docker login
+  docker_login:
+    registry_url: 192.168.56.5:18443
+    tls_hostname: 192.168.56.3
+    ca_cert: "{{ cert_dir }}/ca.crt"
+    username: admin
+    password: admin123
+    config_path: /home/vagrant/.docker/config.json
+
