@@ -19,17 +19,10 @@
     backup: true
 
 - name: ensure nexus args (nexus.properties)
-  replace:
-    path: "{{ nexus_prop_path }}"
-    regexp: '(nexus-args=.*jetty-http.xml,)(\${jetty.etc}/jetty-requestlog.xml.*)?$'
-    replace: '\1${jetty.etc}/jetty-https.xml,\2'
-    backup: true
-
-- name: uncomment nexus args
   lineinfile:
     path: "{{ nexus_prop_path }}"
-    regexp: (?i)^\s*#\s*(nexus-args=.*)
-    line: \1
+    regexp: (?i)^\s*#\s*(nexus-args=.*jetty-http.xml,)(\${jetty.etc}/jetty-requestlog.xml.*)
+    line: \1${jetty.etc}/jetty-https.xml,\2
     backrefs: yes
     backup: true
 
