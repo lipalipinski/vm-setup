@@ -34,3 +34,8 @@
     password: admin123
     config_path: /home/vagrant/.docker/config.json
 
+- name: docker config.json
+  file:
+    path: /home/vagrant/.docker/config.json
+    mode: '0644'
+
