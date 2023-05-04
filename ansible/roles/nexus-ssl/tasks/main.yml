@@ -29,5 +29,19 @@
 - name: ssl.etc in nexus.prop
   lineinfile:
     path: "{{ nexus_prop_path }}"
-    line: "ssl.etc=${karaf.data}/etc/ssl"
+    line: "ssl.etc=/opt/sonatype/nexus3/etc/ssl"
     backup: true
+
+- name: jetty cert alias
+  lineinfile:
+    dest: /opt/sonatype/nexus3/etc/jetty/jetty-https.xml
+    line: '<Set name="certAlias">jetty</Set>'
+    firstmatch: true
+    insertbefore: '<Set name="KeyStorePath">'
+    backup: true
+
+- name: restart nexus service
+  systemd:
+    daemon_reload: true
+    name: nexus-repository-manager.service
+    state: restarted
