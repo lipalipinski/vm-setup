@@ -1,0 +1,6 @@
+---
+- name: restart nexus
+  systemd:
+    daemon_reload: true
+    name: nexus-repository-manager.service
+    state: restarted

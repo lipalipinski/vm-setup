@@ -8,6 +8,7 @@
   shell:
     chdir: /opt/sonatype/nexus3/etc/ssl
     cmd: 'keytool -genkeypair -keystore keystore.jks -storepass password -keypass password -alias jetty -keyalg RSA -keysize 2048 -validity 5000 -dname "CN=*.192.168.56.5, OU=Example, O=Sonatype, L=Unspecified, ST=Unspecified, C=US" -ext "SAN=DNS:192.168.56.5,IP:192.168.56.5" -ext "BC=ca:true"'
+  notify: restart nexus
   when: not keystore.stat.exists
 
 - name: ensure nexus.properties ssl port
@@ -17,6 +18,7 @@
     insertafter: "application-port="
     firstmatch: true
     backup: true
+  notify: restart nexus
 
 - name: ensure nexus args (nexus.properties)
   lineinfile:
@@ -25,12 +27,14 @@
     line: \1${jetty.etc}/jetty-https.xml,\2
     backrefs: yes
     backup: true
+  notify: restart nexus
 
 - name: ssl.etc in nexus.prop
   lineinfile:
     path: "{{ nexus_prop_path }}"
     line: "ssl.etc=/opt/sonatype/nexus3/etc/ssl"
     backup: true
+  notify: restart nexus
 
 - name: jetty cert alias
   lineinfile:
@@ -39,9 +43,4 @@
     firstmatch: true
     insertbefore: '<Set name="KeyStorePath">'
     backup: true
-
-- name: restart nexus service
-  systemd:
-    daemon_reload: true
-    name: nexus-repository-manager.service
-    state: restarted
+  notify: restart nexus
