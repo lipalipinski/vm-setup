@@ -1,0 +1,17 @@
+---
+- name: ensure cert dir
+  file:
+    path: "{{ cert_dir }}"
+    state: directory
+    recurse: true
+
+- name: check if cert exists
+  stat: 
+    path: "{{ cert_dir }}/ca.crt"
+  register: cert
+
+- name: create cert file
+  file:
+    path: "{{ cert_dir }}/ca.crt"
+    state: touch
+  when: not cert.stat.exists

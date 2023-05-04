@@ -51,3 +51,9 @@
   become: true
   roles:
     - nexus-ssl
+
+- name: docker ssl cert
+  hosts: docker
+  become: true
+  roles:
+    - docker-ssl
