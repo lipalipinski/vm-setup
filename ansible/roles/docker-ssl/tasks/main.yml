@@ -10,8 +10,24 @@
     path: "{{ cert_dir }}/ca.crt"
   register: cert
 
-- name: create cert file
-  file:
-    path: "{{ cert_dir }}/ca.crt"
-    state: touch
+#- name: create cert file
+#  file:
+#    path: "{{ cert_dir }}/ca.crt"
+#    state: touch
+#  when: not cert.stat.exists
+
+- name: wait for nexus restart
+  wait_for:
+    host: 192.168.56.5
+    port: 8443
+    state: started
+    timeout: 120
+
+- name: write to cert file
+  shell:
+    executable: /bin/bash
+    chdir: "{{ cert_dir }}"
+    creates: "ca.crt"
+    cmd: "keytool -rfc -printcert -sslserver 192.168.56.5:8443 | sudo tee ca.crt > /dev/null"
   when: not cert.stat.exists
+
