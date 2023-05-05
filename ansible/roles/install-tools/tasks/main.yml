@@ -1,0 +1,13 @@
+---
+- name: install tools
+  apt:
+    name:
+      - ca-certificates
+      - curl
+      - git
+      - gnupg
+      - htop
+      - openjdk-17-jdk
+      - tree
+      - vim
+    state: latest

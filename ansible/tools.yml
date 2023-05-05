@@ -11,19 +11,8 @@
   strategy: free
   hosts: all
   become: true
-  tasks:
-    
-    - apt:
-        name:
-          - ca-certificates
-          - curl
-          - git
-          - gnupg
-          - htop
-          - tree
-          - vim
-          - openjdk-17-jdk
-        state: latest
+  roles:
+    - install-tools
 
 - name: install nexus
   strategy: free
