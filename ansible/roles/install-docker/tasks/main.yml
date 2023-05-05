@@ -1,4 +1,4 @@
----
+--- 
 - name: uninstall any old docker
   apt:
     name:
@@ -14,15 +14,16 @@
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
+  notify: update apt cache
 
 - name: add docker repo
   apt_repository:
     repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
     state: present
+  notify: update apt cache
 
-- name: apt update
-  apt:
-    update-cache: true
+- name: update apt cache
+  meta: flush_handlers
 
 - name: install jdk11
   apt:
