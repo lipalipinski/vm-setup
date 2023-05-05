@@ -21,12 +21,11 @@
   roles:
     - install-nexus
 
-- name: install docker
-  strategy: free
-  hosts: docker
+- name: nexus ssl cert
+  hosts: nexus
   become: true
   roles:
-    - install-docker
+    - nexus-ssl
 
 - name: instal jenkins
   strategy: free
@@ -36,11 +35,12 @@
     - install-jenkins
     - start-jenkins
 
-- name: nexus ssl cert
-  hosts: nexus
+- name: install docker
+  strategy: free
+  hosts: docker
   become: true
   roles:
-    - nexus-ssl
+    - install-docker
 
 - name: docker ssl cert
   hosts: docker

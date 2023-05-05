@@ -1,9 +1,4 @@
 ---
-# name: Add Nexus repo to apt
-# get_url:
-#   url: https://repo.sonatype.com/repository/community-hosted/deb/sonatype-community.list
-#   dest: /etc/apt/sources.list.d/
-
 - name: Add sonatype-community repo
   apt_repository:
     repo: "deb [arch=all trusted=yes] https://repo.sonatype.com/repository/community-apt-hosted/ bionic main"
