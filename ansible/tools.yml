@@ -1,5 +1,4 @@
 ---
-
 - name: update packages
   hosts: all
   strategy: free
