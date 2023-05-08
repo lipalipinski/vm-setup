@@ -1,14 +1,22 @@
 ---
 - name: ensure cert dir
   file:
-    path: "{{ cert_dir }}"
+    path: "{{ cert_dir }}/{{ item.dir }}"
     state: directory
     recurse: true
+  loop:
+    - { dir: 192.168.56.5:18443 }
+    - { dir: 192.168.56.5:18444 }
 
-- name: check if cert exists
+- name: check if :18443 cert exists
   stat: 
-    path: "{{ cert_dir }}/ca.crt"
-  register: cert
+    path: "{{ cert_dir }}/192.168.56.5:18443/ca.crt"
+  register: cert1
+
+- name: check if :18444 cert exists
+  stat: 
+    path: "{{ cert_dir }}/192.168.56.5:18444/ca.crt"
+  register: cert2
 
 - name: wait for nexus restart
   wait_for:
@@ -20,10 +28,18 @@
 - name: write to cert file
   shell:
     executable: /bin/bash
-    chdir: "{{ cert_dir }}"
+    chdir: "{{ cert_dir }}/192.168.56.5:18443"
     creates: "ca.crt"
     cmd: "keytool -rfc -printcert -sslserver 192.168.56.5:8443 | sudo tee ca.crt > /dev/null"
-  when: not cert.stat.exists
+  when: not cert1.stat.exists
+
+- name: write to cert file
+  shell:
+    executable: /bin/bash
+    chdir: "{{ cert_dir }}/192.168.56.5:18444"
+    creates: "ca.crt"
+    cmd: "keytool -rfc -printcert -sslserver 192.168.56.5:8444 | sudo tee ca.crt > /dev/null"
+  when: not cert2.stat.exists
 
 - name: docker login
   docker_login:

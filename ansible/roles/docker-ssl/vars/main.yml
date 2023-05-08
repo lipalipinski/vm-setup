@@ -1,2 +1,2 @@
 ---
-cert_dir: "/etc/docker/certs.d/192.168.56.5:18443"
+cert_dir: "/etc/docker/certs.d/"
