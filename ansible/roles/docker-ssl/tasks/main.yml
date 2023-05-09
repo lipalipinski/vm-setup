@@ -30,16 +30,18 @@
     executable: /bin/bash
     chdir: "{{ cert_dir }}/192.168.56.5:18443"
     creates: "ca.crt"
-    cmd: "keytool -rfc -printcert -sslserver 192.168.56.5:8443 | sudo tee ca.crt > /dev/null"
+    cmd: "keytool -rfc -printcert -sslserver 192.168.56.5:18443 | sudo tee ca.crt > /dev/null"
   when: not cert1.stat.exists
+  notify: restart docker
 
 - name: write to cert file
   shell:
     executable: /bin/bash
     chdir: "{{ cert_dir }}/192.168.56.5:18444"
     creates: "ca.crt"
-    cmd: "keytool -rfc -printcert -sslserver 192.168.56.5:8444 | sudo tee ca.crt > /dev/null"
+    cmd: "keytool -rfc -printcert -sslserver 192.168.56.5:18444 | sudo tee ca.crt > /dev/null"
   when: not cert2.stat.exists
+  notify: restart docker
 
 - name: docker login
   docker_login:
@@ -54,4 +56,3 @@
   file:
     path: /home/vagrant/.docker/config.json
     mode: '0644'
-
