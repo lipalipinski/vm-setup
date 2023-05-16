@@ -1,5 +1,5 @@
 Vagrant.configure("2") do |config|
-  config.vm.box = ""
+  config.vm.box = "hashicorp/bionic64"
 
   config.vm.provider "virtualbox" do |v|
     v.cpus = 2
