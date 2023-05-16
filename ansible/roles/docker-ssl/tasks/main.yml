@@ -5,8 +5,14 @@
     state: directory
     recurse: true
   loop:
+    - { dir: 192.168.56.5:8443 }
     - { dir: 192.168.56.5:18443 }
     - { dir: 192.168.56.5:18444 }
+
+- name: check if :8443 cert exists
+  stat: 
+    path: "{{ cert_dir }}/192.168.56.5:8443/ca.crt"
+  register: cert0
 
 - name: check if :18443 cert exists
   stat: 
@@ -25,34 +31,24 @@
     state: started
     timeout: 120
 
-- name: write to cert file
+- name: write to cert file (8443)
   shell:
     executable: /bin/bash
-    chdir: "{{ cert_dir }}/192.168.56.5:18443"
+    chdir: "{{ cert_dir }}/192.168.56.5:8443"
     creates: "ca.crt"
-    cmd: "keytool -rfc -printcert -sslserver 192.168.56.5:18443 | sudo tee ca.crt > /dev/null"
-  when: not cert1.stat.exists
+    cmd: "keytool -rfc -printcert -sslserver 192.168.56.5:8443 | sudo tee ca.crt > /dev/null"
+  when: 
+    - not cert0.stat.exists 
   notify: restart docker
-
-- name: write to cert file
-  shell:
-    executable: /bin/bash
-    chdir: "{{ cert_dir }}/192.168.56.5:18444"
-    creates: "ca.crt"
-    cmd: "keytool -rfc -printcert -sslserver 192.168.56.5:18444 | sudo tee ca.crt > /dev/null"
-  when: not cert2.stat.exists
-  notify: restart docker
-
-#- name: docker login
-#  docker_login:
-#    registry_url: 192.168.56.5:18443
-#    tls_hostname: 192.168.56.3
-#    ca_cert: "{{ cert_dir }}/ca.crt"
-#    username: admin
-#    password: admin123
-#    config_path: /home/vagrant/.docker/config.json
-
-#- name: docker config.json
-#  file:
-#    path: /home/vagrant/.docker/config.json
-#    mode: '0644'
+  
+- name: copy ca.crt
+  copy:
+    remote_src: true 
+    src: "{{ cert_dir }}/192.168.56.5:8443/ca.crt"
+    dest: "{{ cert_dir }}/192.168.56.5:{{ item }}/ca.crt"
+  when:
+    - not cert1.stat.exists or
+      not cert2.stat.exists 
+  with_items:
+    - "18443"
+    - "18444"
