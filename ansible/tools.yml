@@ -1,23 +1,22 @@
 ---
 - name: update packages
   hosts: all
-  strategy: free
   become: true
   roles: 
     - update
 
 - name: install tools
-  strategy: free
   hosts: all
   become: true
   roles:
     - install-tools
+    - install-jdk-17
 
 - name: install nexus
-  strategy: free
   hosts: nexus
   become: true
   roles:
+    - install-jdk-8
     - install-nexus
 
 - name: nexus ssl cert
@@ -27,7 +26,6 @@
     - nexus-ssl
 
 - name: instal jenkins
-  strategy: free
   hosts: jenkins
   become: true
   roles:
@@ -35,7 +33,6 @@
     - start-jenkins
 
 - name: install docker
-  strategy: free
   hosts: docker
   become: true
   roles:

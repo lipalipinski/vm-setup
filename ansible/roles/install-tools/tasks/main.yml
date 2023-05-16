@@ -7,7 +7,7 @@
       - git
       - gnupg
       - htop
-      - openjdk-17-jdk
       - tree
       - vim
+    update_cache: true
     state: latest

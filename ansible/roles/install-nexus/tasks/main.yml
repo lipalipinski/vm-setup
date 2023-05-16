@@ -2,26 +2,19 @@
 - name: Add sonatype-community repo
   apt_repository:
     repo: "deb [arch=all trusted=yes] https://repo.sonatype.com/repository/community-apt-hosted/ bionic main"
-
-- name: Import Nexus key
-  ansible.builtin.apt_key:
     state: present
-    url: https://repo.sonatype.com/repository/community-hosted/pki/deb-gpg/DEB-GPG-KEY-Sonatype.asc
-
-- name: apt update and upgrade
-  apt:
-    update_cache: true
-    upgrade: full
-
-- name: Install JRE 8
-  apt:
-    name: openjdk-8-jdk
-    state: latest
 
 - name: install Nexus
   apt:
     name: nexus-repository-manager
     state: latest
+    
+- name: wait for nexus restart
+  wait_for:
+    host: localhost
+    port: 8081
+    state: started
+    timeout: 240
 
 - name: summary
   debug:

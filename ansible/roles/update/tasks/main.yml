@@ -3,7 +3,6 @@
     name: systemd-timesyncd
     enabled: true
     state: started
-    
 
 - name: apt update and upgrade
   apt:
