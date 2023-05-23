@@ -45,6 +45,7 @@ credentials:
             scope: GLOBAL
             username: "vagrant"
 jenkins:
+  systemMessage: "Jenkins configured automatically by Jenkins Configuration as Code plugin\n\n"
   agentProtocols:
   - "JNLP4-connect"
   - "Ping"
@@ -97,3 +98,88 @@ tool:
   mavenGlobalConfig:
     globalSettingsProvider: "standard"
     settingsProvider: "standard"
+jobs:
+  - script: >
+      multibranchPipelineJob('Petclinic-PreCommit') {
+        branchSources {
+          git {
+            id('petclinic-100') // IMPORTANT use a constant and unique identifier
+            remote('https://github.com/lipalipinski/spring-petclinic.git')
+            includes('*')
+          }
+        }
+        factory{
+          remoteJenkinsFileWorkflowBranchProjectFactory{
+            fallbackBranch("main")
+            localMarker("")
+            matchBranches(false)
+            remoteJenkinsFile("Jenkinsfile-PreCommit")
+            remoteJenkinsFileSCM{
+              gitSCM{
+                userRemoteConfigs{
+                  userRemoteConfig{
+                    name("") //Custom Repository Name or ID
+                    url("https://github.com/lipalipinski/petclinic-ci.git") //URL for the repository
+                    refspec("refs/heads/main") // Branch spec
+                    credentialsId("") // Credential ID. Leave blank if not required
+                  }
+                }
+                branches{
+                  branchSpec{
+                    name("refs/heads/main")
+                  }
+                }
+                browser{} // Leave blank for default Git Browser
+                gitTool("") //Leave blank for default git executable
+              }
+            }
+          }
+        }
+        triggers {
+          periodicFolderTrigger{
+            interval('5m')
+          }
+        }
+      }
+  - script: >
+      multibranchPipelineJob('Petclinic-Build') {
+        branchSources {
+          git {
+            id('petclinic-200') // IMPORTANT use a constant and unique identifier
+            remote('https://github.com/lipalipinski/spring-petclinic.git')
+            includes('dev')
+          }
+        }
+        factory{
+          remoteJenkinsFileWorkflowBranchProjectFactory{
+            fallbackBranch("main")
+            localMarker("")
+            matchBranches(false)
+            remoteJenkinsFile("Jenkinsfile-Build")
+            remoteJenkinsFileSCM{
+              gitSCM{
+                userRemoteConfigs{
+                  userRemoteConfig{
+                    name("") //Custom Repository Name or ID
+                    url("https://github.com/lipalipinski/petclinic-ci.git") //URL for the repository
+                    refspec("refs/heads/main") // Branch spec
+                    credentialsId("") // Credential ID. Leave blank if not required
+                  }
+                }
+                branches{
+                  branchSpec{
+                    name("refs/heads/main")
+                  }
+                }
+                browser{} // Leave blank for default Git Browser
+                gitTool("") //Leave blank for default git executable
+              }
+            }
+          }
+        }
+        triggers {
+          periodicFolderTrigger{
+            interval('5m')
+          }
+        }
+      }

@@ -30,4 +30,8 @@ plugins:
   - artifactId: ssh-slaves
     source:
       version: latest
+
+  - artifactId: job-dsl
+    source:
+      version: latest
       
