@@ -2,3 +2,10 @@
 - name: update apt cache
   apt:
     update-cache: true
+
+- name: restart jenkins
+  systemd:
+    daemon_reload: true
+    name: jenkins
+    state: restarted
+    enabled: true

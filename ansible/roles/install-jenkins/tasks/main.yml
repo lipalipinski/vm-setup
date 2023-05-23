@@ -18,15 +18,72 @@
   apt:
     name: jenkins
     state: latest
+  register: apt_jenkins
+  notify: restart jenkins
+
+- name: copy plugin manager .jar
+  copy:
+    src: jenkins-plugin-manager-2.12.11.jar
+    dest: "{{ jenkins_home }}"
+    owner: jenkins
+    group: jenkins
+    
+- name: copy plugin list .yml
+  copy:
+    src: jenkins-plugins.yaml
+    dest: "{{ jenkins_home }}"
+    force: true
+    owner: jenkins
+    group: jenkins
+  register: plugin_list
+
+- name: copy jenkins.yaml (jcasc)
+  copy:
+    src: jenkins-casc.yaml
+    dest: "{{ jenkins_home }}/jenkins.yaml"
+    owner: jenkins
+    group: jenkins
+    force: true
+  notify: restart jenkins
+
+- name: run jenkins plugin manager
+  shell: |
+    java -jar "{{ jenkins_home }}/jenkins-plugin-manager-2.12.11.jar" \
+    --war /usr/share/java/jenkins.war \
+    --plugin-download-directory "{{ jenkins_home }}/plugins" \
+    --plugin-file "{{ jenkins_home }}/jenkins-plugins.yaml"
+  when: apt_jenkins.changed is true or plugin_list.changed is true
+  notify: restart jenkins
+
+- name: find all plugin files
+  find:
+    paths: "{{ jenkins_home }}/plugins"
+    patterns: "*.jpi"
+  register: p_files
+
+- name: chow plugin files to jenkins:jenkins
+  file:
+    path: "{{ item.path }}"
+    owner: jenkins
+    group: jenkins
+    mode: '0644'
+  with_items: "{{ p_files.files }}"
+  when: item.pw_name != "jenkins"
+
+- name: enable jenkins service
+  systemd:
+    name: jenkins
+    state: started
+    enabled: true
 
 - name: check if initial passwd exists
   stat:
-    path: /var/lib/jenkins/secrets/initialAdminPassword
+    path: "{{ jenkins_home }}/secrets/initialAdminPassword"
   register: p
 
 - name: read initial admin pass
   shell: |
-    cat /var/lib/jenkins/secrets/initialAdminPassword
+    cat "{{ jenkins_home }}/secrets/initialAdminPassword"
   when: p.stat.exists
   register: adm_passwd
 
@@ -34,4 +91,3 @@
   debug:
     msg: "INITIAL JENKINS ADMIN PASSWD: {{ adm_passwd.stdout }}"
   when: p.stat.exists
-  

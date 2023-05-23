@@ -30,7 +30,6 @@
   become: true
   roles:
     - install-jenkins
-    - start-jenkins
 
 - name: install docker
   hosts: docker

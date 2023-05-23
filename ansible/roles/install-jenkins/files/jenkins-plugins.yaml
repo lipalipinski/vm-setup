@@ -1,0 +1,33 @@
+plugins:
+  - artifactId: configuration-as-code
+    source:
+      version: latest
+
+  - artifactId: docker-workflow
+    source:
+      version: latest
+
+  - artifactId: git
+    source:
+      version: latest
+
+  - artifactId: nexus-artifact-uploader
+    source:
+      version: latest
+      
+  - artifactId: remote-file
+    source:
+      version: latest
+
+  - artifactId: pipeline-utility-steps
+    source:
+      version: latest
+
+  - artifactId: command-launcher
+    source:
+      version: latest
+
+  - artifactId: ssh-slaves
+    source:
+      version: latest
+      

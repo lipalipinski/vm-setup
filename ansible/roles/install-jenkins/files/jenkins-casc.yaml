@@ -1,0 +1,99 @@
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+        - usernamePassword:
+            description: "DEFAULT"
+            id: "nexus-user"
+            password: "admin123"
+            scope: GLOBAL
+            username: "admin"
+        - string:
+            description: "192.168.56.5:8081"
+            id: "nexus-url"
+            scope: GLOBAL
+            secret: "192.168.56.5:8081"
+        - string:
+            description: "http://192.168.56.5:8081/repository/maven-central/"
+            id: "nexus-mvn-central"
+            scope: GLOBAL
+            secret: "http://192.168.56.5:8081/repository/maven-central/"
+        - string:
+            description: "http://192.168.56.5:8081/repository/maven-releases/"
+            id: "nexus-mvn-releases"
+            scope: GLOBAL
+            secret: "http://192.168.56.5:8081/repository/maven-releases/"
+        - string:
+            description: "http://192.168.56.5:8081/repository/maven-snapshots/"
+            id: "nexus-mvn-snapshots"
+            scope: GLOBAL
+            secret: "http://192.168.56.5:8081/repository/maven-snapshots/"
+        - string:
+            description: "192.168.56.5:18444"
+            id: "docker-releases"
+            scope: GLOBAL
+            secret: "192.168.56.5:18444"
+        - string:
+            description: "192.168.56.5:18443"
+            id: "docker-snapshots"
+            scope: GLOBAL
+            secret: "192.168.56.5:18443"
+        - usernamePassword:
+            description: "DEFAULT"
+            id: "agent-ssh-user"
+            password: "vagrant" 
+            scope: GLOBAL
+            username: "vagrant"
+jenkins:
+  agentProtocols:
+  - "JNLP4-connect"
+  - "Ping"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: false
+  disableRememberMe: false
+  labelAtoms:
+  - name: "built-in"
+  - name: "docker"
+  - name: "vm"
+  - name: "vm-docker"
+  markupFormatter: "plainText"
+  mode: NORMAL
+  myViewsTabBar: "standard"
+  nodes:
+  - permanent:
+      labelString: "vm docker"
+      launcher:
+        ssh:
+          credentialsId: "agent-ssh-user"
+          host: "192.168.56.3"
+          port: 22
+          sshHostKeyVerificationStrategy: "nonVerifyingKeyVerificationStrategy"
+      name: "vm-docker"
+      numExecutors: 2
+      remoteFS: "./jenkins-agent"
+      retentionStrategy: "always"
+  numExecutors: 0
+tool:
+  git:
+    installations:
+    - home: "git"
+      name: "Default"
+  jdk:
+    installations:
+    - home: "/usr/lib/jvm/temurin-17-jdk-amd64"
+      name: "temurin-17-jdk"
+  maven:
+    installations:
+    - name: "maven-3.9.1"
+      properties:
+      - installSource:
+          installers:
+          - maven:
+              id: "3.9.1"
+  mavenGlobalConfig:
+    globalSettingsProvider: "standard"
+    settingsProvider: "standard"
