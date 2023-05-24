@@ -183,3 +183,105 @@ jobs:
           }
         }
       }
+  - script: >
+      pipelineJob('Petclinic-Promotion') {
+        description('Configured in JCasC with JobDSL')
+        parameters {
+          string {
+            name("VERSION")
+            description("Artifact version (x.x.x-SNAPSHOT)")
+            trim(true)
+          }
+          string {
+            name("GROUP_ID")
+            defaultValue("org.springframework.samples")
+            trim(true)
+          }
+          string {
+            name("APP_ID")
+            defaultValue("spring-petclinic")
+            trim(true)
+          }
+          string {
+            name("REPO_NAME")
+            defaultValue("maven-snapshots")
+            trim(true)
+          }
+        }
+        definition {
+          cpsScm {
+            lightweight(false)
+            scm {
+              gitSCM{
+                userRemoteConfigs{
+                  userRemoteConfig{
+                    name("") //Custom Repository Name or ID
+                    url("https://github.com/lipalipinski/petclinic-ci.git") //URL for the repository
+                    refspec("refs/heads/main") // Branch spec
+                    credentialsId("") // Credential ID. Leave blank if not required
+                  }
+                }
+                branches{
+                  branchSpec{
+                    name("refs/heads/main")
+                  }
+                }
+                browser{} // Leave blank for default Git Browser
+                gitTool("") //Leave blank for default git executable
+              }
+            }
+            scriptPath("Jenkinsfile-Promotion")
+          }
+        }
+      }
+  - script: >
+      pipelineJob('Petclinic-Deploy') {
+        description('Configured in JCasC with JobDSL')
+        parameters {
+          string {
+            name("VERSION")
+            description("Artifact version (x.x.x)")
+            trim(true)
+          }
+          string {
+            name("GROUP_ID")
+            defaultValue("org.springframework.samples")
+            trim(true)
+          }
+          string {
+            name("APP_ID")
+            defaultValue("spring-petclinic")
+            trim(true)
+          }
+          string {
+            name("REPO_NAME")
+            defaultValue("maven-snapshots")
+            trim(true)
+          }
+        }
+        definition {
+          cpsScm {
+            lightweight(false)
+            scm {
+              gitSCM{
+                userRemoteConfigs{
+                  userRemoteConfig{
+                    name("") //Custom Repository Name or ID
+                    url("https://github.com/lipalipinski/petclinic-ci.git") //URL for the repository
+                    refspec("refs/heads/main") // Branch spec
+                    credentialsId("") // Credential ID. Leave blank if not required
+                  }
+                }
+                branches{
+                  branchSpec{
+                    name("refs/heads/main")
+                  }
+                }
+                browser{} // Leave blank for default Git Browser
+                gitTool("") //Leave blank for default git executable
+              }
+            }
+            scriptPath("Jenkinsfile-Deploy")
+          }
+        }
+      }
