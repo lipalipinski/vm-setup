@@ -43,7 +43,7 @@
 
 - name: run docker without sudo
   user:
-    name: vagrant
+    name: "{{ ansible_user }}"
     groups: docker
     append: true
   register: user_group
