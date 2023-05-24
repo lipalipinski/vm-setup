@@ -52,3 +52,4 @@
   with_items:
     - "18443"
     - "18444"
+  notify: restart docker

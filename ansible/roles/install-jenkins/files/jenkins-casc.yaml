@@ -101,6 +101,7 @@ tool:
 jobs:
   - script: >
       multibranchPipelineJob('Petclinic-PreCommit') {
+        description('Configured in JCasC with JobDSL')
         branchSources {
           git {
             id('petclinic-100') // IMPORTANT use a constant and unique identifier
@@ -143,6 +144,7 @@ jobs:
       }
   - script: >
       multibranchPipelineJob('Petclinic-Build') {
+        description('Configured in JCasC with JobDSL')
         branchSources {
           git {
             id('petclinic-200') // IMPORTANT use a constant and unique identifier

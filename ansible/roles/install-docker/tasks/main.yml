@@ -46,3 +46,8 @@
     name: vagrant
     groups: docker
     append: true
+  register: user_group
+
+- name: reboot after adding user to group
+  reboot:
+  when: user_group.changed
