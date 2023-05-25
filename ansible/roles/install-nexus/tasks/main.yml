@@ -25,6 +25,21 @@
     path: /opt/sonatype/sonatype-work/nexus3/admin.password
   register: pn
 
+- name: create nexus user
+  script:
+    cmd: security-users.sh "admin:admin123"
+  when: pn.stat.exists
+  
+- name: create docker-snapshots repo
+  script:
+    cmd: sh repositories-docker-hosted.sh "admin:admin123" "docker-snapshots.json" 
+  when: pn.stat.exists
+
+- name: create docker-releases repo
+  script: 
+    cmd: sh repositories-docker-hosted.sh "admin:admin123" "docker-releases.json" 
+  when: pn.stat.exists
+
 - name: read admin passwd
   shell: |
     cat /opt/sonatype/sonatype-work/nexus3/admin.password
