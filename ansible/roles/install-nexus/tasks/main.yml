@@ -9,30 +9,192 @@
     name: nexus-repository-manager
     state: latest
     
-- name: wait for nexus restart
+- name: wait for nexus start
   wait_for:
     host: localhost
     port: 8081
     state: started
     timeout: 240
 
-- name: summary
-  debug:
-    msg: "Running Nexus on port 8081"
-    
+- name: dissable setup wizzard
+  lineinfile:
+    dest: "{{ nexus_prop_path }}"
+    line: "nexus.onboarding.enabled=false"
+    firstmatch: true
+    backup: true
+  notify: restart nexus
+
+- name: flush handlers
+  meta: flush_handlers
+
+- name: wait for nexus start
+  wait_for:
+    host: localhost
+    port: 8081
+    state: started
+    timeout: 240
+
 - name: check if initial admin passwd exists
   stat:
     path: /opt/sonatype/sonatype-work/nexus3/admin.password
-  register: pn
+  register: init_passwd
 
 - name: read admin passwd
   shell: |
     cat /opt/sonatype/sonatype-work/nexus3/admin.password
-  when: pn.stat.exists
-  register: nexus_passwd
+  when: init_passwd.stat.exists
+  register: admin_passwd
 
-- name: print nexus passwd
+- name: change admin password
+  uri:
+    url: http://192.168.56.5:8081/service/rest/v1/security/users/admin/change-password
+    method: PUT
+    headers:
+      Content-Type: text/plain
+    force_basic_auth: true
+    user: "admin"
+    password: "{{ admin_passwd.stdout }}"
+    body_format: json
+    body: "admin123"
+    status_code: 204
+  when: init_passwd.stat.exists
+  register: passwd_response
+
+- name: check if user exists
+  uri:
+    url: http://192.168.56.5:8081/service/rest/v1/security/users?userId=jenkins
+    method: GET
+    force_basic_auth: true
+    user: "admin"
+    password: "admin123"
+  register: user_response
+
+- name: create nexus user for jenkins
+  uri:
+    url: http://192.168.56.5:8081/service/rest/v1/security/users
+    method: POST
+    headers:
+      Content-Type: application/json
+    force_basic_auth: true
+    user: "admin"
+    password: "admin123"
+    body_format: json
+    body:
+      userId: jenkins
+      firstName: Dev
+      lastName: Ops
+      emailAddress: dev@ops.org
+      password: jenkins123
+      status: active
+      roles:
+        - nx-admin
+  when: not user_response.json[0] is defined
+  
+- name: check if docker-snapshots repo exists
+  uri:
+    url: http://192.168.56.5:8081/service/rest/v1/repositories/docker/hosted/docker-snapshots
+    method: GET
+    headers:
+      Content-Type: application/json
+    force_basic_auth: true
+    user: "admin"
+    password: "admin123"
+    status_code: [200, 404]
+  register: repo_response
+
+- name: create docker-snapshots repo
+  uri:
+    url: http://192.168.56.5:8081/service/rest/v1/repositories/docker/hosted
+    method: POST
+    headers:
+      Content-Type: application/json
+    force_basic_auth: true
+    user: "admin"
+    password: "admin123"
+    body_format: json
+    body:
+      name: docker-snapshots
+      online: true
+      storage:
+        blobStoreName: default
+        strictContentTypeValidation: true
+        writePolicy: ALLOW
+        latestPolicy: true
+      cleanup:
+        policyNames:
+          - string
+      component:
+        proprietaryComponents: true
+      docker:
+        v1Enabled: false
+        forceBasicAuth: true
+        httpsPort: 18443
+        subdomain: docker-a
+    status_code: 201
+  when: repo_response.status == 404
+  register: repo_response
+
+- name: repopsitory cerated
   debug:
-    msg: "INITIAL NEXUS ADMIN PASSWD: {{ nexus_passwd.stdout }}"
-  when: pn.stat.exists
+    msg: "docker-snapshots repository created"
+  when: (repo_response.status is defined) and (repo_response.status == 201)
 
+- name: check if docker-releases repo exists
+  uri:
+    url: http://192.168.56.5:8081/service/rest/v1/repositories/docker/hosted/docker-releases
+    method: GET
+    headers:
+      Content-Type: application/json
+    force_basic_auth: true
+    user: "admin"
+    password: "admin123"
+    status_code: [200, 404]
+  register: repo_response
+
+- name: create docker-releases repo
+  uri:
+    url: http://192.168.56.5:8081/service/rest/v1/repositories/docker/hosted
+    method: POST
+    headers:
+      Content-Type: application/json
+    force_basic_auth: true
+    user: "admin"
+    password: "admin123"
+    body_format: json
+    body:
+      name: docker-releases
+      online: true
+      storage:
+        blobStoreName: default
+        strictContentTypeValidation: true
+        writePolicy: ALLOW_ONCE
+        latestPolicy: true
+      cleanup:
+        policyNames:
+          - string
+      component:
+        proprietaryComponents: true
+      docker:
+        v1Enabled: false
+        forceBasicAuth: true
+        httpsPort: 18444
+        subdomain: docker-a
+    status_code: 201
+  when: repo_response.status == 404
+  register: repo_response
+
+- name: repopsitory cerated
+  debug:
+    msg: "docker-releases repository created"
+  when: (repo_response.status is defined) and (repo_response.status == 201)
+
+- name: summary
+  debug:
+    msg: "Running Nexus on port 8081"
+
+- name: wait for nexus start
+  wait_for:
+    host: localhost
+    port: 8081
+    state: started
+    timeout: 240

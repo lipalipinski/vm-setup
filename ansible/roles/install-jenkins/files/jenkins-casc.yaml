@@ -5,9 +5,9 @@ credentials:
         - usernamePassword:
             description: "DEFAULT"
             id: "nexus-user"
-            password: "admin123"
             scope: GLOBAL
-            username: "admin"
+            username: "jenkins"
+            password: "jenkins123"
         - string:
             description: "192.168.56.5:8081"
             id: "nexus-url"
@@ -89,12 +89,12 @@ tool:
       name: "temurin-17-jdk"
   maven:
     installations:
-    - name: "maven-3.9.1"
+    - name: "maven-3.9.2"
       properties:
       - installSource:
           installers:
           - maven:
-              id: "3.9.1"
+              id: "3.9.2"
   mavenGlobalConfig:
     globalSettingsProvider: "standard"
     settingsProvider: "standard"
