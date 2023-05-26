@@ -98,6 +98,11 @@ tool:
   mavenGlobalConfig:
     globalSettingsProvider: "standard"
     settingsProvider: "standard"
+unclassified:
+  lockableResourcesManager:
+    declaredResources:
+      - name: "maven"
+        description: "worker node local mvn repo p"
 jobs:
   - script: >
       multibranchPipelineJob('Petclinic-PreCommit') {

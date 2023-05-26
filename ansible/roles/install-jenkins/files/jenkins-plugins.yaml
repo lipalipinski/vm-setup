@@ -3,6 +3,10 @@ plugins:
     source:
       version: latest
 
+  - artifactId: command-launcher
+    source:
+      version: latest
+
   - artifactId: docker-workflow
     source:
       version: latest
@@ -11,19 +15,23 @@ plugins:
     source:
       version: latest
 
+  - artifactId: job-dsl
+    source:
+      version: latest
+
+  - artifactId: lockable-resources
+    source:
+      version: latest
+
   - artifactId: nexus-artifact-uploader
     source:
       version: latest
       
-  - artifactId: remote-file
-    source:
-      version: latest
-
   - artifactId: pipeline-utility-steps
     source:
       version: latest
 
-  - artifactId: command-launcher
+  - artifactId: remote-file
     source:
       version: latest
 
@@ -31,7 +39,4 @@ plugins:
     source:
       version: latest
 
-  - artifactId: job-dsl
-    source:
-      version: latest
       
