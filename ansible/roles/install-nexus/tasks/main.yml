@@ -62,14 +62,14 @@
 
 - name: check if user exists
   uri:
-    url: http://192.168.56.5:8081/service/rest/v1/security/users?userId=devops1
+    url: http://192.168.56.5:8081/service/rest/v1/security/users?userId=jenkins
     method: GET
     force_basic_auth: true
     user: "admin"
     password: "admin123"
   register: user_response
 
-- name: create nexus user
+- name: create nexus user for jenkins
   uri:
     url: http://192.168.56.5:8081/service/rest/v1/security/users
     method: POST
@@ -80,11 +80,11 @@
     password: "admin123"
     body_format: json
     body:
-      userId: devops1
+      userId: jenkins
       firstName: Dev
       lastName: Ops
       emailAddress: dev@ops.org
-      password: devops123
+      password: jenkins123
       status: active
       roles:
         - nx-admin
