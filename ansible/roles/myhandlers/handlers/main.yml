@@ -9,3 +9,9 @@
     name: jenkins
     state: restarted
     enabled: true
+
+- name: restart nexus
+  systemd:
+    daemon_reload: true
+    name: nexus-repository-manager.service
+    state: restarted
