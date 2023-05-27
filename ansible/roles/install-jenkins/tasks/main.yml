@@ -55,20 +55,14 @@
   when: apt_jenkins.changed is true or plugin_list.changed is true
   notify: restart jenkins
 
-- name: find all plugin files
-  find:
-    paths: "{{ jenkins_home }}/plugins"
-    patterns: "*.jpi"
-  register: p_files
-
-- name: chow plugin files to jenkins:jenkins
+- name: set plugin dir ownership to jenkins:jenkins
   file:
-    path: "{{ item.path }}"
+    path: "{{ jenkins_home }}/plugins"
+    state: directory
     owner: jenkins
     group: jenkins
-    mode: '0644'
-  with_items: "{{ p_files.files }}"
-  when: item.pw_name != "jenkins"
+    mode: '0755'
+    recurse: true
 
 - name: enable jenkins service
   systemd:
