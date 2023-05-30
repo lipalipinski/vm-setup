@@ -52,6 +52,39 @@ jenkins:
   authorizationStrategy:
     loggedInUsersCanDoAnything:
       allowAnonymousRead: false
+  clouds:
+  - docker:
+      dockerApi:
+        connectTimeout: 60
+        dockerHost:
+          uri: "tcp://192.168.56.3:2376"
+        readTimeout: 60
+      name: "docker-dynamic"
+      templates:
+      - connector:
+          jnlp:
+            jnlpLauncher:
+              webSocket: true
+              workDirSettings:
+                disabled: false
+                failIfWorkDirIsMissing: false
+                internalDir: "remoting"
+        dockerTemplateBase:
+          cpuPeriod: 0
+          cpuQuota: 0
+          cpus: "2"
+          image: "jenkins/inbound-agent:latest-jdk17"
+          memoryLimit: 1024
+          memorySwap: 5120
+          mounts:
+          - "type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock"
+          mountsString: "type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock"
+        instanceCapStr: "3"
+        labelString: "docker-dynamic"
+        mode: EXCLUSIVE
+        name: "agent"
+        pullTimeout: 300
+        remoteFs: "/home/jenkins/agent" 
   crumbIssuer:
     standard:
       excludeClientIPFromCrumb: false
@@ -78,6 +111,7 @@ jenkins:
       remoteFS: "./jenkins-agent"
       retentionStrategy: "always"
   numExecutors: 0
+  slaveAgentPort: 50000
 tool:
   git:
     installations:
@@ -177,7 +211,7 @@ jobs:
                   userRemoteConfig{
                     name("") //Custom Repository Name or ID
                     url("https://github.com/lipalipinski/petclinic-ci.git") //URL for the repository
-                    refspec("refs/heads/main") // Branch spec
+                    refspec("") // Branch spec
                     credentialsId("") // Credential ID. Leave blank if not required
                   }
                 }
