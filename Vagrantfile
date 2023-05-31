@@ -15,6 +15,10 @@ Vagrant.configure("2") do |config|
       when 0
         sufix="-docker"
         machine.vm.network "forwarded_port", guest: 8080, host: 8090
+        machine.vm.provider "virtualbox" do |v|
+          v.memory = 4096
+          v.cpus = 4
+        end
       when 1
         sufix="-jenkins"
         machine.vm.network "forwarded_port", guest: 8080, host: 8091

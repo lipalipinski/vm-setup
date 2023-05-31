@@ -70,10 +70,8 @@ jenkins:
                 failIfWorkDirIsMissing: false
                 internalDir: "remoting"
         dockerTemplateBase:
-          cpuPeriod: 0
-          cpuQuota: 0
           cpus: "2"
-          image: "jenkins/inbound-agent:latest-jdk17"
+          image: "lipalipinski/jenkins-docker-jdk17"
           memoryLimit: 1024
           memorySwap: 5120
           mounts:
@@ -83,8 +81,9 @@ jenkins:
         labelString: "docker-dynamic"
         mode: EXCLUSIVE
         name: "agent"
+        pullStrategy: PULL_NEVER
         pullTimeout: 300
-        remoteFs: "/home/jenkins/agent" 
+        remoteFs: "/home/jenkins/agent"
   crumbIssuer:
     standard:
       excludeClientIPFromCrumb: false
@@ -132,11 +131,6 @@ tool:
   mavenGlobalConfig:
     globalSettingsProvider: "standard"
     settingsProvider: "standard"
-unclassified:
-  lockableResourcesManager:
-    declaredResources:
-      - name: "maven"
-        description: "worker node local mvn repo p"
 jobs:
   - script: >
       multibranchPipelineJob('Petclinic-PreCommit') {

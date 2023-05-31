@@ -37,3 +37,4 @@
   roles:
     - install-docker
     - docker-ssl
+    - docker-image

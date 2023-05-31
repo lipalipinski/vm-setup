@@ -34,12 +34,14 @@
       - docker-buildx-plugin
       - docker-compose-plugin
     state: latest
+  notify: restart docker
 
-- name: start docker service
-  service:
-    name: docker
-    state: started
-    enabled: true
+- name: expose socket on 2376
+  lineinfile:
+    path: /lib/systemd/system/docker.service
+    regexp: '^ExecStart='
+    line: ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2376 -H unix:///var/run/docker.sock
+  notify: restart docker
 
 - name: run docker without sudo
   user:
@@ -51,3 +53,6 @@
 - name: reboot after adding user to group
   reboot:
   when: user_group.changed
+
+- name: flush handlers
+  meta: flush_handlers

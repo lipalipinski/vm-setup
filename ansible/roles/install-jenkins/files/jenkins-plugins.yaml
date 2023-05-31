@@ -79,10 +79,6 @@ plugins:
     source:
       version: 305.v8f4381501156
 
-  - artifactId: lockable-resources
-    source:
-      version: 1156.v5e9f897ece02
-
   - artifactId: workflow-multibranch
     source:
       version: 746.v05814d19c001

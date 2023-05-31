@@ -15,3 +15,10 @@
     daemon_reload: true
     name: nexus-repository-manager.service
     state: restarted
+
+- name: restart docker
+  systemd:
+    daemon_reload: true
+    name: docker.service
+    state: restarted
+    enabled: true
