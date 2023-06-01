@@ -96,19 +96,6 @@ jenkins:
   markupFormatter: "plainText"
   mode: NORMAL
   myViewsTabBar: "standard"
-  nodes:
-  - permanent:
-      labelString: "vm docker"
-      launcher:
-        ssh:
-          credentialsId: "agent-ssh-user"
-          host: "192.168.56.3"
-          port: 22
-          sshHostKeyVerificationStrategy: "nonVerifyingKeyVerificationStrategy"
-      name: "vm-docker"
-      numExecutors: 2
-      remoteFS: "./jenkins-agent"
-      retentionStrategy: "always"
   numExecutors: 0
   slaveAgentPort: 50000
 tool:
