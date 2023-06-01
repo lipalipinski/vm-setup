@@ -247,7 +247,7 @@ jobs:
                   userRemoteConfig{
                     name("") //Custom Repository Name or ID
                     url("https://github.com/lipalipinski/petclinic-ci.git") //URL for the repository
-                    refspec("refs/heads/main") // Branch spec
+                    refspec("") // Branch spec
                     credentialsId("") // Credential ID. Leave blank if not required
                   }
                 }
@@ -298,7 +298,7 @@ jobs:
                   userRemoteConfig{
                     name("") //Custom Repository Name or ID
                     url("https://github.com/lipalipinski/petclinic-ci.git") //URL for the repository
-                    refspec("refs/heads/main") // Branch spec
+                    refspec("") // Branch spec
                     credentialsId("") // Credential ID. Leave blank if not required
                   }
                 }
